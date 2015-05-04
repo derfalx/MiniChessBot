@@ -10,6 +10,7 @@ import com.sun.media.jfxmedia.events.PlayerStateEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Random;
 
 /**
  * @author falx
@@ -34,6 +35,11 @@ public class ChessBot
     this.mGameBoard = gameBoard;
     this.mPlayerColor = playerColor;
     this.mPlayerState = playerState;
+  }
+
+  public ChessBot()
+  {
+
   }
 
 
@@ -65,6 +71,13 @@ public class ChessBot
     this.mPlayerState = PlayerState.ACTIVE;
     Move moveToMake = null;
 
+    Collection<Move> movesCollection = this.scanWholeGameBoard();
+    Move[] moves = new Move[movesCollection.size()];
+    moves = movesCollection.toArray( moves );
+
+    Random rnd = new Random();
+    int nextMoveIdx = rnd.nextInt( moves.length );
+    moveToMake = moves[nextMoveIdx];
 
     this.mPlayerState = PlayerState.WAITING;
     return moveToMake;
@@ -86,10 +99,13 @@ public class ChessBot
         stopShort = true;
       case WHITE_QUEEN:
       case BLACK_QUEEN:
-        for ( dx = -1; dx <= 1; dx = dx + 2 )
+        for ( dx = -1; dx <= 1; dx++ )
         {
-          for ( dy = -1; dy <= 1; dy = dy + 2 )
+          for ( dy = -1; dy <= 1; dy++ )
           {
+            if ( ( dy == 0 ) && ( dx == 0 ) )
+              continue;
+
             moves.addAll( this.moveScan( square, dx, dy, stopShort ) );
           }
         }
@@ -129,7 +145,7 @@ public class ChessBot
             int tmp = dx;
             dx = dy;
             dy = tmp;
-            dy  = -dy;
+            dy = -dy;
           }
         }
         break;
@@ -183,7 +199,7 @@ public class ChessBot
         }
 
         capture = false;
-        moves.addAll( this.moveScan( square, 0 /*=dx*/, dy, stopShort, capture ) );
+        moves.addAll( this.moveScan( square, 0 /*=dx*/, dy, capture, stopShort ) );
 
         break;
 
@@ -196,8 +212,8 @@ public class ChessBot
 
   public Collection<Move> moveScan ( Square from, int dx, int dy, boolean capture, boolean stopShort )
   {
-    int x = from.fRowCount;
-    int y = from.fColumnCount;
+    int y = from.fRowCount;
+    int x = from.fColumnCount;
 
     PlayerColor color = this.mGameBoard.getFigure( from ).color;
     assert ( color.equals( this.mPlayerColor ) );
@@ -210,7 +226,7 @@ public class ChessBot
       if ( !( x < GameBoard.HORIZONTAL_SIZE
               && y < GameBoard.VERTICAL_SIZE
               && x >= 0
-              && y >= 0) )
+              && y >= 0 ) )
         break;
 
       PlayerColor figureColor = this.mGameBoard.getFigure( new Square( x, y ) ).color;
@@ -224,7 +240,7 @@ public class ChessBot
 
         stopShort = true;
       }
-      Square to = new Square( y, x );
+      Square to = new Square( x, y );
       moves.add( new Move( from, to, color ) );
     }
     while ( !stopShort );
@@ -240,6 +256,25 @@ public class ChessBot
   public Collection<Move> moveScan ( Square from, int dx, int dy, boolean stopShort )
   {
     return this.moveScan( from, dx, dy, true, stopShort );
+  }
+
+  public Collection<Move> scanWholeGameBoard ()
+  {
+    Collection<Move> moves = new ArrayList<>();
+
+    for ( int y = 0; y < GameBoard.VERTICAL_SIZE; y++ )
+    {
+      for ( int x = 0; x < GameBoard.HORIZONTAL_SIZE; x++ )
+      {
+        Figure figure = this.mGameBoard.getGameBoard()[y][x];
+        if ( figure.color.equals( this.mPlayerColor ) )
+        {
+          moves.addAll( this.moveList( new Square( x, y ) ) );
+        }
+      }
+    }
+
+    return moves;
   }
 
   @Override

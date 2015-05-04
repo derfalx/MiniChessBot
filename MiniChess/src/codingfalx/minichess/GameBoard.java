@@ -4,11 +4,14 @@
 
 package codingfalx.minichess;
 
+import java.util.Arrays;
+
 /**
  * @author Kristoffer Schneider
  * @created 04.05.2015
  */
 public class GameBoard
+        implements Cloneable
 {
   //<editor-fold desc="Fields">
 
@@ -16,7 +19,9 @@ public class GameBoard
   public static final int VERTICAL_SIZE = 6;
   public static final int fMaxTurns = 80;
   private final Figure mGameBoard[][];
+  private String mGameBoardSource;
   private int mTurnsLeft;
+  private Figure mTakenKing;
 
   //</editor-fold>
 
@@ -28,9 +33,41 @@ public class GameBoard
     this.mTurnsLeft = GameBoard.fMaxTurns;
   }
 
+  @Override
+  public GameBoard clone ()
+  {
+    GameBoard clone = new GameBoard();
+    clone.parseBoardFromString( this.mGameBoardSource );
+    clone.mTurnsLeft = this.mTurnsLeft;
+
+    return clone;
+  }
+
   //</editor-fold>
 
   //<editor-fold desc="Methods">
+
+  public Figure getFigure ( Square square )
+  {
+    int y = square.fRowCount;
+    int x = square.fColumnCount;
+    return this.mGameBoard[y][x];
+  }
+
+  public Figure[][] getGameBoard ()
+  {
+    return mGameBoard;
+  }
+
+  public Figure getTakenKing ()
+  {
+    return mTakenKing;
+  }
+
+  public int getTurnsLeft ()
+  {
+    return this.mTurnsLeft;
+  }
 
   public boolean makeMove ( Move move )
   {
@@ -41,7 +78,13 @@ public class GameBoard
     }
 
     Figure toMove = this.replaceFigure( move.fFrom, Figure.EMPTY );
-    this.replaceFigure( move.fTo, toMove );
+    Figure replaced = this.replaceFigure( move.fTo, toMove );
+
+    if ( replaced.equals( Figure.BLACK_KING ) || replaced.equals( Figure.WHITE_KING ) )
+    {
+      this.mTakenKing = replaced;
+      this.mTurnsLeft = 0;
+    }
 
     this.mTurnsLeft--;
     return true;
@@ -65,6 +108,8 @@ public class GameBoard
         y++;
     }
 
+    this.mGameBoardSource = s;
+
     return true;
   }
 
@@ -86,13 +131,6 @@ public class GameBoard
     }
 
     return sb.toString();
-  }
-
-  public Figure getFigure ( Square square )
-  {
-    int y = square.fRowCount;
-    int x = square.fColumnCount;
-    return this.mGameBoard[y][x];
   }
 
   private boolean isValidMove ( Move move )

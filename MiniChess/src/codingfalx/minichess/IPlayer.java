@@ -17,4 +17,5 @@ public interface IPlayer
   GameBoard getGameBoard();
   void setGameBoard ( GameBoard gameBoard );
   PlayerState getPlayerState();
+  Move makeMove();
 }

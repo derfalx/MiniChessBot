@@ -30,7 +30,7 @@ public class Square
     this.fColumnCount = column;
 
     this.fColumn = (char) ( 'a' + column );
-    this.fRow = (char) ( '1' + ( 6 - row ) );
+    this.fRow = (char) ( '1' + ( 5 - row ) );
   }
 
   public Square ( char column, char row )
@@ -49,7 +49,7 @@ public class Square
   }
 
   @Override
-  public String toString()
+  public String toString ()
   {
     return fColumn + "-" + fRow;
   }
