@@ -54,5 +54,22 @@ public abstract class AbstractPlayer
     mPlayerColor = playerColor;
   }
 
+  public void loadFromString( String s )
+  {
+    String[] parts = s.split( " " );
+    int turnsLeft = 80 - ( Integer.parseInt( parts[0] ) * 2 );
+    PlayerColor color;
+    if ( parts[1].equals ( PlayerColor.BLACK.symbol ) )
+      this.mPlayerColor = PlayerColor.BLACK;
+    else if ( parts[1].equals( PlayerColor.WHITE.symbol ) )
+      this.mPlayerColor = PlayerColor.WHITE;
+
+    if ( this.mGameBoard == null )
+      this.mGameBoard = new GameBoard();
+
+    this.mGameBoard.parseBoardFromString( parts[2] );
+    this.mGameBoard.setTurnsLeft( turnsLeft );
+  }
+
   //</editor-fold>
 }

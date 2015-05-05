@@ -6,7 +6,15 @@ package codingfalx.minichess;
 
 public enum PlayerColor
 {
-  BLACK,
-  WHITE,
-  NEUTRAL;
+  BLACK ( "B" ),
+  WHITE ( "W" ),
+  NEUTRAL ( "" );
+
+  public String symbol;
+
+  PlayerColor ( String symbol)
+  {
+    this.symbol = symbol;
+  }
 }
+

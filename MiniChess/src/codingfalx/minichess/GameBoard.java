@@ -17,9 +17,11 @@ public class GameBoard
   public static final int VERTICAL_SIZE = 6;
   public static final int fMaxTurns = 80;
   private final Figure mGameBoard[][];
+  private double mBlackScore;
   private String mGameBoardSource;
   private Figure mTakenKing;
   private int mTurnsLeft;
+  private double mWhiteScore;
 
   //</editor-fold>
 
@@ -47,6 +49,11 @@ public class GameBoard
     clone.mTurnsLeft = this.mTurnsLeft;
 
     return clone;
+  }
+
+  public double getBlackScore ()
+  {
+    return mBlackScore;
   }
 
   /**
@@ -84,6 +91,11 @@ public class GameBoard
     return this.mTurnsLeft;
   }
 
+  public double getWhiteScore ()
+  {
+    return mWhiteScore;
+  }
+
   /**
    * applies the given move to the gameboard if it is valid
    *
@@ -102,6 +114,11 @@ public class GameBoard
 
     Figure toMove = this.replaceFigure( move.fFrom, Figure.EMPTY );
     Figure replaced = this.replaceFigure( move.fTo, toMove );
+    if ( move.fPlayerColor.equals( PlayerColor.BLACK ) )
+      this.mBlackScore += replaced.scoreValue;
+    else if ( move.fPlayerColor.equals( PlayerColor.WHITE ) )
+      this.mWhiteScore += replaced.scoreValue;
+
 
     if ( replaced.equals( Figure.BLACK_KING ) || replaced.equals( Figure.WHITE_KING ) )
     {
@@ -142,6 +159,22 @@ public class GameBoard
     this.mGameBoardSource = s;
 
     return true;
+  }
+
+  public String serializeBoardToString ()
+  {
+    StringBuilder sb = new StringBuilder();
+    for ( Figure[] row : this.mGameBoard )
+    {
+      for ( Figure f : row )
+        sb.append( f.symbol );
+    }
+    return sb.toString();
+  }
+
+  public void setTurnsLeft ( int turnsLeft )
+  {
+    mTurnsLeft = turnsLeft;
   }
 
   /**
@@ -204,10 +237,18 @@ public class GameBoard
     int y = square.fRowCount;
     int x = square.fColumnCount;
     if ( ( y == 0 ) && replacement.equals( Figure.WHITE_PAWN ) )
+    {
       replacement = Figure.WHITE_QUEEN;
+      this.mWhiteScore -= Figure.WHITE_PAWN.scoreValue;
+      this.mWhiteScore += Figure.WHITE_QUEEN.scoreValue;
+    }
     else if ( ( y == ( GameBoard.VERTICAL_SIZE - 1 ) ) &&
             replacement.equals( Figure.BLACK_PAWN ) )
+    {
       replacement = Figure.BLACK_QUEEN;
+      this.mBlackScore -= Figure.BLACK_PAWN.scoreValue;
+      this.mBlackScore += Figure.BLACK_QUEEN.scoreValue;
+    }
 
     Figure toReturn = this.getFigure( square );
     this.mGameBoard[y][x] = replacement;

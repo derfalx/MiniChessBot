@@ -10,28 +10,30 @@ package codingfalx.minichess;
  */
 public enum Figure
 {
-  WHITE_KING( 'K', PlayerColor.WHITE ),
-  WHITE_QUEEN( 'Q', PlayerColor.WHITE ),
-  WHITE_PAWN( 'P', PlayerColor.WHITE ),
-  WHITE_ROOK( 'R', PlayerColor.WHITE ),
-  WHITE_BISHOP( 'B', PlayerColor.WHITE ),
-  WHITE_KNIGHT( 'N', PlayerColor.WHITE ),
-  BLACK_KING( 'k', PlayerColor.BLACK ),
-  BLACK_QUEEN( 'q', PlayerColor.BLACK ),
-  BLACK_PAWN( 'p', PlayerColor.BLACK ),
-  BLACK_ROOK( 'r', PlayerColor.BLACK ),
-  BLACK_BISHOP( 'b', PlayerColor.BLACK ),
-  BLACK_KNIGHT( 'n', PlayerColor.BLACK ),
-  EMPTY( '.', PlayerColor.NEUTRAL );
+  WHITE_KING( 'K', PlayerColor.WHITE, Double.MAX_VALUE - 1_000_000 ),
+  WHITE_QUEEN( 'Q', PlayerColor.WHITE, 900d ),
+  WHITE_PAWN( 'P', PlayerColor.WHITE, 100d ),
+  WHITE_ROOK( 'R', PlayerColor.WHITE, 500d ),
+  WHITE_BISHOP( 'B', PlayerColor.WHITE, 300d ),
+  WHITE_KNIGHT( 'N', PlayerColor.WHITE,300d ),
+  BLACK_KING( 'k', PlayerColor.BLACK, Double.MAX_VALUE - 1_000_000 ),
+  BLACK_QUEEN( 'q', PlayerColor.BLACK, 900d ),
+  BLACK_PAWN( 'p', PlayerColor.BLACK, 100d ),
+  BLACK_ROOK( 'r', PlayerColor.BLACK, 500d ),
+  BLACK_BISHOP( 'b', PlayerColor.BLACK, 300d ),
+  BLACK_KNIGHT( 'n', PlayerColor.BLACK, 300d ),
+  EMPTY( '.', PlayerColor.NEUTRAL, 0d );
 
 
   public final PlayerColor color;
   public final char symbol;
+  public final double scoreValue;
 
-  Figure ( char symbol, PlayerColor color )
+  Figure ( char symbol, PlayerColor color, double scoreValue )
   {
     this.symbol = symbol;
     this.color = color;
+    this.scoreValue = scoreValue;
   }
 
   public static Figure getFigure ( char symbol )

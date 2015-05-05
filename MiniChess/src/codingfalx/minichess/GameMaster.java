@@ -47,13 +47,13 @@ public class GameMaster
   public PlayerColor runGame ( boolean silent )
   {
 
-    System.out.println( this.mGameBoard );
+    //System.out.println( this.mGameBoard );
 
     IPlayer activePlayer;
     IPlayer inactivePlayer;
     int i = 0;
     Move old = null;
-    while ( this.mGameBoard.getTurnsLeft() > 0 )
+    while ( ( this.mGameBoard.getTurnsLeft() - 1 ) > 0 )
     {
       assert ( !this.mActivePlayerColor.equals( PlayerColor.NEUTRAL ) );
 
@@ -69,6 +69,8 @@ public class GameMaster
       }
 
       Move m = activePlayer.makeMove();
+      if ( m == null )
+        break;
       assert ( m.fPlayerColor.equals( activePlayer.getPlayerColor() ) );
       boolean valid = this.mGameBoard.makeMove( m );
       assert ( valid );
@@ -79,7 +81,7 @@ public class GameMaster
 
       this.mActivePlayerColor = inactivePlayer.getPlayerColor();
 
-      if ( /*( ( i % 2 ) == 0 ) && */ !silent )
+      if ( ( ( i % 2 ) == 0 ) &&  !silent )
       {
         System.out.println( "ZUG: " + i );
         System.out.println( this.mGameBoard );
@@ -91,6 +93,9 @@ public class GameMaster
         old = m;
       i++;
     }
+
+    if ( this.mGameBoard.getTurnsLeft() < -1 )
+      throw new RuntimeException();
 
     Figure king = this.mGameBoard.getTakenKing();
     if ( king != null )

@@ -6,6 +6,7 @@ package codingfalx.minichess.bot;
 
 import codingfalx.minichess.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -23,8 +24,8 @@ public class Main
     GameBoard board = new GameBoard();
     board.parseBoardFromString( board_str );
     System.out.println( board );
-    ChessBot bot = new ChessBot( board, PlayerColor.WHITE, PlayerState.ACTIVE );
-    Collection<Move> coll = bot.scanWholeGameBoard();
+    GreedyBot bot = new GreedyBot( board, PlayerColor.WHITE, PlayerState.ACTIVE );
+    Collection<ScoredMove> coll = bot.scanWholeGameBoard();
     int i = 0;
     for ( Move mm : coll )
     {
@@ -34,22 +35,51 @@ public class Main
 
   public static void RandomVsConsoleTest ()
   {
-    ChessBot black = new ChessBot();
+    GreedyBot black = new GreedyBot();
     ConsolePlayer white = new ConsolePlayer();
     GameMaster gm = new GameMaster( black, white );
     System.out.println( gm.runGame( false ) );
   }
 
-  public static void RandomVsRandomTest ()
+  public static void GreedyVsRandomTest ()
   {
-    for ( int i = 0; i < 25; i++ )
+    int black_ = 0 ;
+    int white_ = 0;
+    int draw_ = 0;
+    ArrayList<Double> times = new ArrayList<>();
+    for ( int j = 0; j < 20; j++ )
     {
-      ChessBot black = new ChessBot();
-      ChessBot white = new ChessBot();
-      GameMaster gm = new GameMaster( black, white );
-      // System.out.println( "LETS PLAY!" );
-      System.out.println( gm.runGame( true ) );
+      double start = System.currentTimeMillis();
+      for ( int i = 0; i < 10_000; i++ )
+      {
+        GreedyBot white = new GreedyBot();
+        RandomBot black = new RandomBot();
+        GameMaster gm = new GameMaster( black, white );
+        //System.out.println( "LETS PLAY!" );
+        PlayerColor c = gm.runGame( true );
+        //System.out.println( c );
+        if ( c.equals( PlayerColor.WHITE ) )
+          white_++;
+        else if ( c.equals( PlayerColor.BLACK ) )
+          black_++;
+        else
+          draw_++;
+      }
+      times.add( System.currentTimeMillis() - start );
     }
+    double sum = 0;
+    double min = Double.MAX_VALUE;
+    double max = Double.MIN_VALUE;
+    for ( double d : times )
+    {
+      sum += d;
+      if ( d < min )
+        min = d;
+      if ( d > max )
+        max = d;
+    }
+    System.out.println ( sum/50 + " " + min  + " " + max);
+    System.out.printf( "Black: %d\tWhite: %d\tDraw: %d\n", black_, white_, draw_ );
   }
 
   public static void main ( String[] args )
@@ -89,18 +119,18 @@ public class Main
 
     GaryTest();*/
 
-    //RandomVsRandomTest();
+    GreedyVsRandomTest();
 
     //PawnToQueenTest();
 
-    RandomVsConsoleTest();
+   /* RandomVsConsoleTest();*/
 
   }
 
   public static void testMovList ( Square from, GameBoard board )
   {
-    ChessBot bot = new ChessBot( board, PlayerColor.WHITE, PlayerState.ACTIVE );
-    Collection<Move> coll = bot.moveList( from );
+    GreedyBot bot = new GreedyBot( board, PlayerColor.WHITE, PlayerState.ACTIVE );
+    Collection<ScoredMove> coll = bot.moveList( from );
     for ( Move mm : coll )
     {
       System.out.println( mm.toString() + " " );
@@ -112,7 +142,7 @@ public class Main
     String board_str = "........................P.....";
     GameBoard board = new GameBoard();
     board.parseBoardFromString( board_str );
-    ChessBot bot = new ChessBot( board, PlayerColor.WHITE, PlayerState.WAITING );
+    GreedyBot bot = new GreedyBot( board, PlayerColor.WHITE, PlayerState.WAITING );
     for ( int i = 0; i < 8; i++ )
     {
       Move m = bot.makeMove();

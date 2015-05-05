@@ -8,69 +8,36 @@ import codingfalx.minichess.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Random;
 
 /**
  * @author falx
- * @created 04.05.2015
+ * @created 05.05.2015
  */
-public class ChessBot
+public abstract class ChessBot
         extends AbstractPlayer
 {
-  //<editor-fold desc="Fields">
-
-
-  //</editor-fold>
 
   //<editor-fold desc="Constructor">
-
-  public ChessBot ( GameBoard gameBoard, PlayerColor playerColor, PlayerState playerState )
-  {
-    this.mGameBoard = gameBoard;
-    this.mPlayerColor = playerColor;
-    this.mPlayerState = playerState;
-  }
-
-  public ChessBot ()
-  {
-    this.mPlayerState = PlayerState.WAITING;
-  }
 
 
   //</editor-fold>
 
   //<editor-fold desc="Methods">
 
-  public Move makeMove ()
-  {
-    assert ( this.mPlayerState.equals( PlayerState.WAITING ) );
-    this.mPlayerState = PlayerState.ACTIVE;
-    Move moveToMake = null;
-
-    Collection<Move> movesCollection = this.scanWholeGameBoard();
-    Move[] moves = new Move[movesCollection.size()];
-    moves = movesCollection.toArray( moves );
-
-    if ( moves.length > 0 )
-    {
-      Random rnd = new Random();
-      int nextMoveIdx = rnd.nextInt( moves.length );
-      moveToMake = moves[nextMoveIdx];
-    }
-
-    this.mPlayerState = PlayerState.WAITING;
-    return moveToMake;
-  }
+  public abstract Move makeMove ();
 
   /**
    * Scans for <b>all</b> possible moves for the figure at the given position
-   * @param square position for which to search
+   *
+   * @param square
+   *         position for which to search
+   *
    * @return a list of all possible moves
    */
-  public Collection<Move> moveList ( Square square )
+  public Collection<ScoredMove> moveList ( Square square )
   {
     Figure figure = this.mGameBoard.getFigure( square );
-    Collection<Move> moves = new ArrayList<>();
+    Collection<ScoredMove> moves = new ArrayList<>();
     int dx;
     int dy;
     boolean stopShort = false;
@@ -168,7 +135,7 @@ public class ChessBot
           dy = 1;
 
         stopShort = true;
-        Collection<Move> movesTmp;
+        Collection<ScoredMove> movesTmp;
 
         for ( int i = -1; i <= 1; i = i + 2 )
         {
@@ -196,24 +163,35 @@ public class ChessBot
 
   /**
    * Scans for all possible moves by the given parameters
-   * @param from position where to start searching from
-   * @param dx to move in x-axis
-   * @param dy delta to move in y-axis
-   * @param capture wether or not to capture an enemy if possible
-   * @param stopShort wether or not to stop searching after the nearest positions
+   *
+   * @param from
+   *         position where to start searching from
+   * @param dx
+   *         to move in x-axis
+   * @param dy
+   *         delta to move in y-axis
+   * @param capture
+   *         wether or not to capture an enemy if possible
+   * @param stopShort
+   *         wether or not to stop searching after the nearest positions
+   *
    * @return a collection of possible moves
    */
-  public Collection<Move> moveScan ( Square from, int dx, int dy, boolean capture, boolean stopShort )
+  public Collection<ScoredMove> moveScan ( Square from, int dx, int dy, boolean capture, boolean stopShort )
   {
     int y = from.fRowCount;
     int x = from.fColumnCount;
 
-    PlayerColor color = this.mGameBoard.getFigure( from ).color;
+    Figure currentFigure = this.mGameBoard.getFigure( from );
+    PlayerColor color = currentFigure.color;
     assert ( color.equals( this.mPlayerColor ) );
-    Collection<Move> moves = new ArrayList<>();
+    Collection<ScoredMove> moves = new ArrayList<>();
+
+    double score = 0;
 
     do
     {
+      score = 0;
       x = x + dx;
       y = y + dy;
       if ( !( x < GameBoard.HORIZONTAL_SIZE
@@ -222,7 +200,8 @@ public class ChessBot
               && y >= 0 ) )
         break;
 
-      PlayerColor figureColor = this.mGameBoard.getFigure( new Square( x, y ) ).color;
+      Figure figure = this.mGameBoard.getFigure( new Square( x, y ) );
+      PlayerColor figureColor = figure.color;
       if ( !figureColor.equals( PlayerColor.NEUTRAL ) )
       {
         if ( figureColor.equals( color ) )
@@ -232,9 +211,23 @@ public class ChessBot
           break;
 
         stopShort = true;
+        score = figure.scoreValue;
       }
+      if ( currentFigure.equals( Figure.BLACK_PAWN ) &&
+              x == 0 &&
+              y == 0)
+      {
+        score += Figure.BLACK_QUEEN.scoreValue;
+      }
+      else if ( currentFigure.equals( Figure.WHITE_PAWN ) &&
+                  x == GameBoard.HORIZONTAL_SIZE - 1 &&
+                  y == GameBoard.VERTICAL_SIZE -1)
+      {
+        score += Figure.WHITE_QUEEN.scoreValue;
+      }
+
       Square to = new Square( x, y );
-      moves.add( new Move( from, to, color ) );
+      moves.add( new ScoredMove( from, to, color, score ) );
     }
     while ( !stopShort );
 
@@ -242,37 +235,42 @@ public class ChessBot
   }
 
   /**
-   * @see ChessBot#moveScan(Square, int, int, boolean, boolean)
    * @param from
    * @param dx
    * @param dy
+   *
    * @return
+   *
+   * @see GreedyBot#moveScan(Square, int, int, boolean, boolean)
    */
-  public Collection<Move> moveScan ( Square from, int dx, int dy )
+  public Collection<ScoredMove> moveScan ( Square from, int dx, int dy )
   {
     return this.moveScan( from, dx, dy, true, false );
   }
 
   /**
-   * @see ChessBot#moveScan(Square, int, int, boolean, boolean)
    * @param from
    * @param dx
    * @param dy
    * @param stopShort
+   *
    * @return
+   *
+   * @see GreedyBot#moveScan(Square, int, int, boolean, boolean)
    */
-  public Collection<Move> moveScan ( Square from, int dx, int dy, boolean stopShort )
+  public Collection<ScoredMove> moveScan ( Square from, int dx, int dy, boolean stopShort )
   {
     return this.moveScan( from, dx, dy, true, stopShort );
   }
 
   /**
    * Scans the whole GameBoard for possible moves of the its player
+   *
    * @return
    */
-  public Collection<Move> scanWholeGameBoard ()
+  public Collection<ScoredMove> scanWholeGameBoard ()
   {
-    Collection<Move> moves = new ArrayList<>();
+    Collection<ScoredMove> moves = new ArrayList<>();
 
     for ( int y = 0; y < GameBoard.VERTICAL_SIZE; y++ )
     {
