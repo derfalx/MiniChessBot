@@ -1,6 +1,4 @@
-package codingfalx.minichess.bot.states;
-
-import java.util.function.Function;
+package codingfalx.minichess;
 
 /**
  * @author falx

@@ -5,7 +5,6 @@
 package codingfalx.minichess.bot;
 
 import codingfalx.minichess.*;
-import codingfalx.minichess.bot.states.PlayerState;
 
 import java.util.Collection;
 
@@ -15,16 +14,6 @@ import java.util.Collection;
  */
 public class Main
 {
-  //<editor-fold desc="Fields">
-
-
-  //</editor-fold>
-
-  //<editor-fold desc="Constructor">
-
-
-  //</editor-fold>
-
   //<editor-fold desc="Methods">
 
   public static void GaryTest ()
@@ -40,6 +29,26 @@ public class Main
     for ( Move mm : coll )
     {
       System.out.println( i++ + " " + mm.toString() + " " );
+    }
+  }
+
+  public static void RandomVsConsoleTest ()
+  {
+    ChessBot black = new ChessBot();
+    ConsolePlayer white = new ConsolePlayer();
+    GameMaster gm = new GameMaster( black, white );
+    System.out.println( gm.runGame( false ) );
+  }
+
+  public static void RandomVsRandomTest ()
+  {
+    for ( int i = 0; i < 25; i++ )
+    {
+      ChessBot black = new ChessBot();
+      ChessBot white = new ChessBot();
+      GameMaster gm = new GameMaster( black, white );
+      // System.out.println( "LETS PLAY!" );
+      System.out.println( gm.runGame( true ) );
     }
   }
 
@@ -80,11 +89,12 @@ public class Main
 
     GaryTest();*/
 
-    ChessBot black = new ChessBot();
-    ChessBot white = new ChessBot();
-    GameMaster gm = new GameMaster( black, white );
-    System.out.println( "\n\n\n\nLETS PLAY!" );
-    gm.runGame();
+    //RandomVsRandomTest();
+
+    //PawnToQueenTest();
+
+    RandomVsConsoleTest();
+
   }
 
   public static void testMovList ( Square from, GameBoard board )
@@ -94,6 +104,20 @@ public class Main
     for ( Move mm : coll )
     {
       System.out.println( mm.toString() + " " );
+    }
+  }
+
+  private static void PawnToQueenTest ()
+  {
+    String board_str = "........................P.....";
+    GameBoard board = new GameBoard();
+    board.parseBoardFromString( board_str );
+    ChessBot bot = new ChessBot( board, PlayerColor.WHITE, PlayerState.WAITING );
+    for ( int i = 0; i < 8; i++ )
+    {
+      Move m = bot.makeMove();
+      board.makeMove( m );
+      System.out.println( board );
     }
   }
 

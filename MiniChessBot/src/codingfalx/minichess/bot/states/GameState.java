@@ -5,7 +5,6 @@
 package codingfalx.minichess.bot.states;
 
 import codingfalx.minichess.GameBoard;
-import codingfalx.minichess.PlayerColor;
 
 /**
  * @author falx

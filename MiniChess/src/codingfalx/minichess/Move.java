@@ -7,6 +7,8 @@ package codingfalx.minichess;
 /**
  * @author falx
  * @created 04.05.2015
+ *
+ * Represents a move of a player.
  */
 public class Move
 {
@@ -39,7 +41,7 @@ public class Move
   }
 
   @Override
-  public String toString()
+  public String toString ()
   {
     return "FROM: " + this.fFrom.toString() + " TO: " + this.fTo.toString();
   }

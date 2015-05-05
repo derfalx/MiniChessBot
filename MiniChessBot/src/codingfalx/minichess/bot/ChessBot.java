@@ -5,8 +5,6 @@
 package codingfalx.minichess.bot;
 
 import codingfalx.minichess.*;
-import codingfalx.minichess.bot.states.PlayerState;
-import com.sun.media.jfxmedia.events.PlayerStateEvent;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,13 +15,9 @@ import java.util.Random;
  * @created 04.05.2015
  */
 public class ChessBot
-        implements IPlayer
+        extends AbstractPlayer
 {
   //<editor-fold desc="Fields">
-
-  private GameBoard mGameBoard;
-  private PlayerColor mPlayerColor;
-  private PlayerState mPlayerState;
 
 
   //</editor-fold>
@@ -37,33 +31,15 @@ public class ChessBot
     this.mPlayerState = playerState;
   }
 
-  public ChessBot()
+  public ChessBot ()
   {
-
+    this.mPlayerState = PlayerState.WAITING;
   }
 
 
   //</editor-fold>
 
   //<editor-fold desc="Methods">
-
-  @Override
-  public GameBoard getGameBoard ()
-  {
-    return mGameBoard;
-  }
-
-  @Override
-  public PlayerColor getPlayerColor ()
-  {
-    return mPlayerColor;
-  }
-
-  @Override
-  public PlayerStateEvent.PlayerState getPlayerState ()
-  {
-    return null;
-  }
 
   public Move makeMove ()
   {
@@ -75,14 +51,22 @@ public class ChessBot
     Move[] moves = new Move[movesCollection.size()];
     moves = movesCollection.toArray( moves );
 
-    Random rnd = new Random();
-    int nextMoveIdx = rnd.nextInt( moves.length );
-    moveToMake = moves[nextMoveIdx];
+    if ( moves.length > 0 )
+    {
+      Random rnd = new Random();
+      int nextMoveIdx = rnd.nextInt( moves.length );
+      moveToMake = moves[nextMoveIdx];
+    }
 
     this.mPlayerState = PlayerState.WAITING;
     return moveToMake;
   }
 
+  /**
+   * Scans for <b>all</b> possible moves for the figure at the given position
+   * @param square position for which to search
+   * @return a list of all possible moves
+   */
   public Collection<Move> moveList ( Square square )
   {
     Figure figure = this.mGameBoard.getFigure( square );
@@ -210,6 +194,15 @@ public class ChessBot
     return moves;
   }
 
+  /**
+   * Scans for all possible moves by the given parameters
+   * @param from position where to start searching from
+   * @param dx to move in x-axis
+   * @param dy delta to move in y-axis
+   * @param capture wether or not to capture an enemy if possible
+   * @param stopShort wether or not to stop searching after the nearest positions
+   * @return a collection of possible moves
+   */
   public Collection<Move> moveScan ( Square from, int dx, int dy, boolean capture, boolean stopShort )
   {
     int y = from.fRowCount;
@@ -248,16 +241,35 @@ public class ChessBot
     return moves;
   }
 
+  /**
+   * @see ChessBot#moveScan(Square, int, int, boolean, boolean)
+   * @param from
+   * @param dx
+   * @param dy
+   * @return
+   */
   public Collection<Move> moveScan ( Square from, int dx, int dy )
   {
     return this.moveScan( from, dx, dy, true, false );
   }
 
+  /**
+   * @see ChessBot#moveScan(Square, int, int, boolean, boolean)
+   * @param from
+   * @param dx
+   * @param dy
+   * @param stopShort
+   * @return
+   */
   public Collection<Move> moveScan ( Square from, int dx, int dy, boolean stopShort )
   {
     return this.moveScan( from, dx, dy, true, stopShort );
   }
 
+  /**
+   * Scans the whole GameBoard for possible moves of the its player
+   * @return
+   */
   public Collection<Move> scanWholeGameBoard ()
   {
     Collection<Move> moves = new ArrayList<>();
@@ -275,18 +287,6 @@ public class ChessBot
     }
 
     return moves;
-  }
-
-  @Override
-  public void setGameBoard ( GameBoard gameBoard )
-  {
-    mGameBoard = gameBoard;
-  }
-
-  @Override
-  public void setPlayerColor ( PlayerColor playerColor )
-  {
-    mPlayerColor = playerColor;
   }
 
   //</editor-fold>

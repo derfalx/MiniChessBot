@@ -7,22 +7,24 @@ package codingfalx.minichess;
 /**
  * @author Kristoffer Schneider
  * @created 04.05.2015
+ *
+ * Coordinates a MiniChess-session including the Players and their GameBoards
  */
 public class GameMaster
 {
   //<editor-fold desc="Fields">
 
-  private GameBoard mGameBoard;
-  private IPlayer mPlayerWhite;
-  private IPlayer mPlayerBlack;
   private PlayerColor mActivePlayerColor;
+  private GameBoard mGameBoard;
+  private IPlayer mPlayerBlack;
+  private IPlayer mPlayerWhite;
 
 
   //</editor-fold>
 
   //<editor-fold desc="Constructor">
 
-  public GameMaster( IPlayer playerBlack, IPlayer playerWhite )
+  public GameMaster ( IPlayer playerBlack, IPlayer playerWhite )
   {
     this.mGameBoard = new GameBoard();
     this.mGameBoard.parseBoardFromString( "kqbnrppppp..........PPPPPRNBQK" );
@@ -42,8 +44,11 @@ public class GameMaster
 
   //<editor-fold desc="Methods">
 
-  public IPlayer runGame ()
+  public PlayerColor runGame ( boolean silent )
   {
+
+    System.out.println( this.mGameBoard );
+
     IPlayer activePlayer;
     IPlayer inactivePlayer;
     int i = 0;
@@ -67,17 +72,19 @@ public class GameMaster
       assert ( m.fPlayerColor.equals( activePlayer.getPlayerColor() ) );
       boolean valid = this.mGameBoard.makeMove( m );
       assert ( valid );
+      valid = activePlayer.getGameBoard().makeMove( m );
+      assert ( valid );
       valid = inactivePlayer.getGameBoard().makeMove( m );
       assert ( valid );
 
       this.mActivePlayerColor = inactivePlayer.getPlayerColor();
 
-      if ( (i % 2) == 0 )
+      if ( /*( ( i % 2 ) == 0 ) && */ !silent )
       {
-        System.out.println ( "ZUG: " + i );
+        System.out.println( "ZUG: " + i );
         System.out.println( this.mGameBoard );
-        System.out.println ( old );
-        System.out.println ( m );
+        System.out.println( old );
+        System.out.println( m );
         System.out.println( "------------------" );
       }
       else
@@ -89,11 +96,11 @@ public class GameMaster
     if ( king != null )
     {
       if ( king.color.equals( PlayerColor.WHITE ) )
-        return this.mPlayerWhite;
+        return this.mPlayerBlack.getPlayerColor();
       else
-        return this.mPlayerBlack;
+        return this.mPlayerWhite.getPlayerColor();
     }
-    return null;
+    return PlayerColor.NEUTRAL;
   }
 
   //</editor-fold>

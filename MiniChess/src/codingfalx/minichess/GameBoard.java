@@ -4,8 +4,6 @@
 
 package codingfalx.minichess;
 
-import java.util.Arrays;
-
 /**
  * @author Kristoffer Schneider
  * @created 04.05.2015
@@ -20,8 +18,8 @@ public class GameBoard
   public static final int fMaxTurns = 80;
   private final Figure mGameBoard[][];
   private String mGameBoardSource;
-  private int mTurnsLeft;
   private Figure mTakenKing;
+  private int mTurnsLeft;
 
   //</editor-fold>
 
@@ -33,6 +31,14 @@ public class GameBoard
     this.mTurnsLeft = GameBoard.fMaxTurns;
   }
 
+
+  //</editor-fold>
+
+  //<editor-fold desc="Methods">
+
+  /**
+   * @see Object#clone()
+   */
   @Override
   public GameBoard clone ()
   {
@@ -43,10 +49,12 @@ public class GameBoard
     return clone;
   }
 
-  //</editor-fold>
-
-  //<editor-fold desc="Methods">
-
+  /**
+   * @param square
+   *         of which to get the Figure
+   *
+   * @return figure at the given square
+   */
   public Figure getFigure ( Square square )
   {
     int y = square.fRowCount;
@@ -56,19 +64,34 @@ public class GameBoard
 
   public Figure[][] getGameBoard ()
   {
+    // TODO: return clone of the gameboard?!
     return mGameBoard;
   }
 
+  /**
+   * @return the taken king if one player won, else {@see Figure.EMPTY}
+   */
   public Figure getTakenKing ()
   {
     return mTakenKing;
   }
 
+  /**
+   * @return the moves left on this board
+   */
   public int getTurnsLeft ()
   {
     return this.mTurnsLeft;
   }
 
+  /**
+   * applies the given move to the gameboard if it is valid
+   *
+   * @param move
+   *         the move to apply
+   *
+   * @return true if successful, else false
+   */
   public boolean makeMove ( Move move )
   {
 
@@ -90,6 +113,14 @@ public class GameBoard
     return true;
   }
 
+  /**
+   * parses a board setup from the given string
+   *
+   * @param s
+   *         the board setup as string
+   *
+   * @return true if it was successful, else false
+   */
   public boolean parseBoardFromString ( String s )
   {
     if ( s.length() != ( VERTICAL_SIZE * HORIZONTAL_SIZE ) )
@@ -113,6 +144,11 @@ public class GameBoard
     return true;
   }
 
+  /**
+   * @return
+   *
+   * @see Object#toString()
+   */
   @Override
   public String toString ()
   {
@@ -133,6 +169,15 @@ public class GameBoard
     return sb.toString();
   }
 
+  /**
+   * checks if the given move is valid or not.
+   * A move is only valid if the Player moves its own figures
+   *
+   * @param move
+   *         move to check
+   *
+   * @return true if valid, else false
+   */
   private boolean isValidMove ( Move move )
   {
     Figure figure = this.getFigure( move.fFrom );
@@ -142,10 +187,28 @@ public class GameBoard
     return true;
   }
 
+  /**
+   * Replaces a Figure at the given square using the given Figure for replacement.
+   * If the Figure to replace the Square with is a Pawn, and the Pawn is able to promote,
+   * then it will be promoted
+   *
+   * @param square
+   *         where to replace
+   * @param replacement
+   *         Figure to replace with
+   *
+   * @return the replaced Figure
+   */
   private Figure replaceFigure ( Square square, Figure replacement )
   {
     int y = square.fRowCount;
     int x = square.fColumnCount;
+    if ( ( y == 0 ) && replacement.equals( Figure.WHITE_PAWN ) )
+      replacement = Figure.WHITE_QUEEN;
+    else if ( ( y == ( GameBoard.VERTICAL_SIZE - 1 ) ) &&
+            replacement.equals( Figure.BLACK_PAWN ) )
+      replacement = Figure.BLACK_QUEEN;
+
     Figure toReturn = this.getFigure( square );
     this.mGameBoard[y][x] = replacement;
 

@@ -7,6 +7,9 @@ package codingfalx.minichess;
 /**
  * @author falx
  * @created 04.05.2015
+ *
+ * Represents a Position on the GameBoard using a numerical and symbolic
+ * representation
  */
 public class Square
 {

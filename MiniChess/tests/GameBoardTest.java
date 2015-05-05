@@ -17,21 +17,6 @@ public class GameBoardTest
         extends TestCase
 {
 
-  public void testToString () throws Exception
-  {
-
-  }
-
-  public void testParseBoardFromString () throws Exception
-  {
-
-  }
-
-  public void testMakeMove () throws Exception
-  {
-
-  }
-
   public void setUp () throws Exception
   {
     super.setUp();
@@ -68,6 +53,21 @@ public class GameBoardTest
   }
 
   public void tearDown () throws Exception
+  {
+
+  }
+
+  public void testMakeMove () throws Exception
+  {
+
+  }
+
+  public void testParseBoardFromString () throws Exception
+  {
+
+  }
+
+  public void testToString () throws Exception
   {
 
   }

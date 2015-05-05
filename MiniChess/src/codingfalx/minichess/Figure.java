@@ -10,23 +10,23 @@ package codingfalx.minichess;
  */
 public enum Figure
 {
-  WHITE_KING ( 'K', PlayerColor.WHITE ),
+  WHITE_KING( 'K', PlayerColor.WHITE ),
   WHITE_QUEEN( 'Q', PlayerColor.WHITE ),
-  WHITE_PAWN ( 'P', PlayerColor.WHITE ),
+  WHITE_PAWN( 'P', PlayerColor.WHITE ),
   WHITE_ROOK( 'R', PlayerColor.WHITE ),
   WHITE_BISHOP( 'B', PlayerColor.WHITE ),
-  WHITE_KNIGHT ( 'N', PlayerColor.WHITE),
-  BLACK_KING ( 'k', PlayerColor.BLACK ),
+  WHITE_KNIGHT( 'N', PlayerColor.WHITE ),
+  BLACK_KING( 'k', PlayerColor.BLACK ),
   BLACK_QUEEN( 'q', PlayerColor.BLACK ),
-  BLACK_PAWN ( 'p', PlayerColor.BLACK ),
+  BLACK_PAWN( 'p', PlayerColor.BLACK ),
   BLACK_ROOK( 'r', PlayerColor.BLACK ),
   BLACK_BISHOP( 'b', PlayerColor.BLACK ),
-  BLACK_KNIGHT ( 'n', PlayerColor.BLACK),
-  EMPTY('.', PlayerColor.NEUTRAL );
+  BLACK_KNIGHT( 'n', PlayerColor.BLACK ),
+  EMPTY( '.', PlayerColor.NEUTRAL );
 
 
-  public final char symbol;
   public final PlayerColor color;
+  public final char symbol;
 
   Figure ( char symbol, PlayerColor color )
   {

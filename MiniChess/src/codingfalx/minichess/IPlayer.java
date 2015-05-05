@@ -4,18 +4,27 @@
 
 package codingfalx.minichess;
 
-import com.sun.media.jfxmedia.events.PlayerStateEvent.PlayerState;
-
 /**
  * @author falx
  * @created 04.05.2015
+ *
+ *
  */
 public interface IPlayer
 {
-  PlayerColor getPlayerColor();
-  void setPlayerColor(PlayerColor color );
-  GameBoard getGameBoard();
+  GameBoard getGameBoard ();
+
+  PlayerColor getPlayerColor ();
+
+  PlayerState getPlayerState ();
+
+  /**
+   * Chooses a move to make and returns it
+   * @return move to make
+   */
+  Move makeMove ();
+
   void setGameBoard ( GameBoard gameBoard );
-  PlayerState getPlayerState();
-  Move makeMove();
+
+  void setPlayerColor ( PlayerColor color );
 }
