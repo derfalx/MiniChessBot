@@ -4,6 +4,10 @@
 
 package codingfalx.minichess;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+
 /**
  * @author falx
  * @created 05.05.2015
@@ -45,7 +49,7 @@ public abstract class AbstractPlayer
   @Override
   public void setGameBoard ( GameBoard gameBoard )
   {
-    mGameBoard = gameBoard;
+    this.mGameBoard = gameBoard;
   }
 
   @Override

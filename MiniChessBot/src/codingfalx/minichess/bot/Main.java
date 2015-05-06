@@ -6,6 +6,7 @@ package codingfalx.minichess.bot;
 
 import codingfalx.minichess.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -33,27 +34,111 @@ public class Main
     }
   }
 
-  public static void RandomVsConsoleTest ()
-  {
-    GreedyBot black = new GreedyBot();
-    ConsolePlayer white = new ConsolePlayer();
-    GameMaster gm = new GameMaster( black, white );
-    System.out.println( gm.runGame( false ) );
-  }
-
-  public static void GreedyVsRandomTest ()
+  public static void GreedyVsLookAheadTest () throws IOException
   {
     int black_ = 0 ;
     int white_ = 0;
     int draw_ = 0;
     ArrayList<Double> times = new ArrayList<>();
-    for ( int j = 0; j < 20; j++ )
+    for ( int j = 0; j < 1; j++ )
+    {
+      double start = System.currentTimeMillis();
+      for ( int i = 0; i < 1; i++ )
+      {
+        GreedyBot white = new GreedyBot();
+       //LookAheadBot white = new LookAheadBot();
+        LookAheadBot black = new LookAheadBot( 7 );
+        GameMaster gm = new GameMaster( black, white );
+        //System.out.println( "LETS PLAY!" );
+        PlayerColor c = gm.runGame( true );
+        System.out.println( c );
+        if ( c.equals( PlayerColor.WHITE ) )
+          white_++;
+        else if ( c.equals( PlayerColor.BLACK ) )
+          black_++;
+        else
+          draw_++;
+      }
+      times.add( System.currentTimeMillis() - start );
+    }
+    double sum = 0;
+    double min = Double.MAX_VALUE;
+    double max = Double.MIN_VALUE;
+    for ( double d : times )
+    {
+      sum += d;
+      if ( d < min )
+        min = d;
+      if ( d > max )
+        max = d;
+    }
+    System.out.println ( sum/50 + " " + min  + " " + max + " " + sum );
+    System.out.printf( "Black: %d\tWhite: %d\tDraw: %d\n", black_, white_, draw_ );
+  }
+
+  public static void GreedyVsABLookAheadTest() throws IOException
+  {
+    int black_ = 0 ;
+    int white_ = 0;
+    int draw_ = 0;
+    ArrayList<Double> times = new ArrayList<>();
+    for ( int j = 0; j < 10; j++ )
+    {
+      double start = System.currentTimeMillis();
+      for ( int i = 0; i < 20; i++ )
+      {
+        GreedyBot white = new GreedyBot();
+        //ABPrunedLookAheadBot white = new ABPrunedLookAheadBot();
+        ABPrunedLookAheadBot black = new ABPrunedLookAheadBot( 4 );
+        GameMaster gm = new GameMaster( black, white );
+        //System.out.println( "LETS PLAY!" );
+        PlayerColor c = gm.runGame( true );
+        System.out.println( c );
+        if ( c.equals( PlayerColor.WHITE ) )
+          white_++;
+        else if ( c.equals( PlayerColor.BLACK ) )
+          black_++;
+        else
+          draw_++;
+      }
+      times.add( System.currentTimeMillis() - start );
+    }
+    double sum = 0;
+    double min = Double.MAX_VALUE;
+    double max = Double.MIN_VALUE;
+    for ( double d : times )
+    {
+      sum += d;
+      if ( d < min )
+        min = d;
+      if ( d > max )
+        max = d;
+    }
+    System.out.println ( sum/50 + " " + min  + " " + max + " " + sum );
+    System.out.printf( "Black: %d\tWhite: %d\tDraw: %d\n", black_, white_, draw_ );
+  }
+
+  public static void RandomVsConsoleTest () throws IOException
+  {
+    GreedyBot black = new GreedyBot();
+    ConsolePlayer white = new ConsolePlayer();
+    //GameMaster gm = new GameMaster( black, white );
+    //System.out.println( gm.runGame( false ) );
+  }
+
+  public static void GreedyVsRandomTest () throws IOException
+  {
+    int black_ = 0 ;
+    int white_ = 0;
+    int draw_ = 0;
+    ArrayList<Double> times = new ArrayList<>();
+    for ( int j = 0; j < 10; j++ )
     {
       double start = System.currentTimeMillis();
       for ( int i = 0; i < 10_000; i++ )
       {
-        GreedyBot white = new GreedyBot();
-        RandomBot black = new RandomBot();
+        GreedyBot black = new GreedyBot();
+        RandomBot white = new RandomBot();
         GameMaster gm = new GameMaster( black, white );
         //System.out.println( "LETS PLAY!" );
         PlayerColor c = gm.runGame( true );
@@ -82,7 +167,51 @@ public class Main
     System.out.printf( "Black: %d\tWhite: %d\tDraw: %d\n", black_, white_, draw_ );
   }
 
-  public static void main ( String[] args )
+  public static void GreedyVsGreedyTest() throws IOException
+  {
+    int black_ = 0 ;
+    int white_ = 0;
+    int draw_ = 0;
+    ArrayList<Double> times = new ArrayList<>();
+    double total = System.currentTimeMillis();
+    for ( int j = 0; j < 2; j++ )
+    {
+      double start = System.currentTimeMillis();
+      for ( int i = 0; i < 10_000; i++ )
+      {
+        GreedyBot white = new GreedyBot();
+        GreedyBot black = new GreedyBot();
+        GameMaster gm = new GameMaster( black, white );
+        //System.out.println( "LETS PLAY!" );
+        PlayerColor c = gm.runGame( true );
+        //System.out.println( c );
+        if ( c.equals( PlayerColor.WHITE ) )
+          white_++;
+        else if ( c.equals( PlayerColor.BLACK ) )
+          black_++;
+        else
+          draw_++;
+      }
+      times.add( System.currentTimeMillis() - start );
+    }
+    double sum = 0;
+    double min = Double.MAX_VALUE;
+    double max = Double.MIN_VALUE;
+    for ( double d : times )
+    {
+      sum += d;
+      if ( d < min )
+        min = d;
+      if ( d > max )
+        max = d;
+    }
+    System.out.println ( sum/50 + " " + min  + " " + max);
+    System.out.println( System.currentTimeMillis() - total );
+    System.out.printf( "Black: %d\tWhite: %d\tDraw: %d\n", black_, white_, draw_ );
+  }
+
+
+  public static void main ( String[] args ) throws IOException
   {
 /*    String board_str = "kqbnrppppp..........PPPPPRNBQK";
     GameBoard board = new GameBoard();
@@ -119,11 +248,17 @@ public class Main
 
     GaryTest();*/
 
-    GreedyVsRandomTest();
+    //GreedyVsRandomTest();
+
+    //GreedyVsLookAheadTest();
+
+    //GreedyVsABLookAheadTest();
 
     //PawnToQueenTest();
 
    /* RandomVsConsoleTest();*/
+
+    GreedyVsGreedyTest();
 
   }
 

@@ -54,7 +54,7 @@ public class Square
   @Override
   public String toString ()
   {
-    return fColumn + "-" + fRow;
+    return fColumn + "" + fRow;
   }
 
 

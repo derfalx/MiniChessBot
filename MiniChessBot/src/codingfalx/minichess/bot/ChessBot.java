@@ -8,6 +8,7 @@ import codingfalx.minichess.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * @author falx
@@ -287,5 +288,42 @@ public abstract class ChessBot
     return moves;
   }
 
+
+
+  public String writeToString ( )
+  {
+    int turnsleft = this.mGameBoard.getTurnsLeft() / 2;
+    char color = ( this.mPlayerColor.equals( PlayerColor.BLACK ) ) ? 'B' : 'W';
+
+    String board = this.mGameBoard.serializeBoardToString();
+    double score = ( this.mPlayerColor.equals( PlayerColor.BLACK )  ) ? this.mGameBoard.getBlackScore() : this.mGameBoard.getWhiteScore();
+
+    Collection<ScoredMove> moves = this.scanWholeGameBoard();
+
+    ArrayList<String> str = new ArrayList<>( moves.size() );
+    for ( ScoredMove m : moves )
+    {
+      str.add( m.toString() );
+    }
+
+    Collections.sort( str );
+
+    StringBuilder sb = new StringBuilder();
+    sb.append ( turnsleft );
+    sb.append( " " );
+    sb.append ( color );
+    sb.append ( " " );
+    sb.append ( board );
+    sb.append ( " " );
+    sb.append ( score );
+    sb.append ( " " );
+    for ( String s : str )
+    {
+      sb.append ( s );
+      sb.append( " " );
+    }
+
+    return sb.toString();
+  }
   //</editor-fold>
 }

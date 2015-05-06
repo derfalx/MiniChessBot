@@ -2,7 +2,13 @@
  * Copyright (c) 2015 by Kristoffer Schneider
  */
 
-package codingfalx.minichess;
+package codingfalx.minichess.bot;
+
+import codingfalx.minichess.*;
+
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 /**
  * @author Kristoffer Schneider
@@ -16,15 +22,17 @@ public class GameMaster
 
   private PlayerColor mActivePlayerColor;
   private GameBoard mGameBoard;
-  private IPlayer mPlayerBlack;
-  private IPlayer mPlayerWhite;
+  private ChessBot mPlayerBlack;
+  private ChessBot mPlayerWhite;
+
+  private BufferedWriter writer;
 
 
   //</editor-fold>
 
   //<editor-fold desc="Constructor">
 
-  public GameMaster ( IPlayer playerBlack, IPlayer playerWhite )
+  public GameMaster ( ChessBot playerBlack, ChessBot playerWhite ) throws IOException
   {
     this.mGameBoard = new GameBoard();
     this.mGameBoard.parseBoardFromString( "kqbnrppppp..........PPPPPRNBQK" );
@@ -38,19 +46,21 @@ public class GameMaster
     this.mPlayerBlack.setPlayerColor( PlayerColor.BLACK );
     this.mPlayerBlack.setGameBoard( this.mGameBoard.clone() );
 
+    writer = new BufferedWriter( new FileWriter( "C:\\Users\\Kristoffer\\Desktop\\out.txt", true ) );
+
   }
 
   //</editor-fold>
 
   //<editor-fold desc="Methods">
 
-  public PlayerColor runGame ( boolean silent )
+  public PlayerColor runGame ( boolean silent ) throws IOException
   {
 
-    //System.out.println( this.mGameBoard );
+   // System.out.println( this.mGameBoard );
 
-    IPlayer activePlayer;
-    IPlayer inactivePlayer;
+    ChessBot activePlayer;
+    ChessBot inactivePlayer;
     int i = 0;
     Move old = null;
     while ( ( this.mGameBoard.getTurnsLeft() - 1 ) > 0 )
@@ -69,8 +79,7 @@ public class GameMaster
       }
 
       Move m = activePlayer.makeMove();
-      if ( m == null )
-        break;
+      assert ( m != null );
       assert ( m.fPlayerColor.equals( activePlayer.getPlayerColor() ) );
       boolean valid = this.mGameBoard.makeMove( m );
       assert ( valid );
@@ -80,6 +89,11 @@ public class GameMaster
       assert ( valid );
 
       this.mActivePlayerColor = inactivePlayer.getPlayerColor();
+
+      if ( i%2 == 0 )
+      {
+        writer.append( activePlayer.writeToString() + "\n" );
+      }
 
       if ( ( ( i % 2 ) == 0 ) &&  !silent )
       {
@@ -92,6 +106,9 @@ public class GameMaster
       else
         old = m;
       i++;
+
+      if ( this.mGameBoard.getTakenKing() != null )
+        break;
     }
 
     if ( this.mGameBoard.getTurnsLeft() < -1 )
@@ -105,6 +122,9 @@ public class GameMaster
       else
         return this.mPlayerWhite.getPlayerColor();
     }
+
+    writer.close();
+
     return PlayerColor.NEUTRAL;
   }
 

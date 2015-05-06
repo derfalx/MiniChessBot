@@ -4,12 +4,8 @@
 
 package codingfalx.minichess.bot;
 
-import codingfalx.minichess.GameBoard;
-import codingfalx.minichess.Move;
-import codingfalx.minichess.PlayerColor;
-import codingfalx.minichess.PlayerState;
+import codingfalx.minichess.*;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Random;
 

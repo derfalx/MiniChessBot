@@ -43,7 +43,7 @@ public class Move
   @Override
   public String toString ()
   {
-    return "FROM: " + this.fFrom.toString() + " TO: " + this.fTo.toString();
+    return this.fFrom.toString() + "-" + this.fTo.toString();
   }
 
   //</editor-fold>

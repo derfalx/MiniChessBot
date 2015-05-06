@@ -80,13 +80,11 @@ public class GreedyBot
 
     if ( this.mPlayerColor.equals( PlayerColor.WHITE ) )
     {
-      currentScoreSum += this.mGameBoard.getWhiteScore();
-      currentScoreSum -= this.mGameBoard.getBlackScore();
+      currentScoreSum = this.mGameBoard.getWhiteScore();
     }
     else
     {
-      currentScoreSum += this.mGameBoard.getBlackScore();
-      currentScoreSum -= this.mGameBoard.getWhiteScore();
+      currentScoreSum = this.mGameBoard.getBlackScore();
     }
 
     for ( ScoredMove m : moves )

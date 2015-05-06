@@ -4,6 +4,8 @@
 
 package codingfalx.minichess;
 
+import java.io.BufferedWriter;
+
 /**
  * @author Kristoffer Schneider
  * @created 04.05.2015
@@ -17,11 +19,13 @@ public class GameBoard
   public static final int VERTICAL_SIZE = 6;
   public static final int fMaxTurns = 80;
   private final Figure mGameBoard[][];
-  private double mBlackScore;
+  private double mBlackScore = 1_002_000;
   private String mGameBoardSource;
   private Figure mTakenKing;
   private int mTurnsLeft;
-  private double mWhiteScore;
+  private double mWhiteScore = 1_002_000;
+
+
 
   //</editor-fold>
 
@@ -45,15 +49,22 @@ public class GameBoard
   public GameBoard clone ()
   {
     GameBoard clone = new GameBoard();
-    clone.parseBoardFromString( this.mGameBoardSource );
+    for ( int y = 0; y < GameBoard.VERTICAL_SIZE; y++ )
+    {
+      for ( int x = 0; x < GameBoard.HORIZONTAL_SIZE; x++ )
+        clone.mGameBoard[y][x] = this.mGameBoard[y][x];
+    }
     clone.mTurnsLeft = this.mTurnsLeft;
+    clone.mBlackScore = this.mBlackScore;
+    clone.mWhiteScore = this.mWhiteScore;
+    clone.mTakenKing = this.mTakenKing;
 
     return clone;
   }
 
   public double getBlackScore ()
   {
-    return mBlackScore;
+    return this.mBlackScore - this.mWhiteScore;
   }
 
   /**
@@ -93,7 +104,7 @@ public class GameBoard
 
   public double getWhiteScore ()
   {
-    return mWhiteScore;
+    return this.mWhiteScore - this.mBlackScore;
   }
 
   /**
@@ -114,16 +125,20 @@ public class GameBoard
 
     Figure toMove = this.replaceFigure( move.fFrom, Figure.EMPTY );
     Figure replaced = this.replaceFigure( move.fTo, toMove );
+
     if ( move.fPlayerColor.equals( PlayerColor.BLACK ) )
-      this.mBlackScore += replaced.scoreValue;
+    {
+      this.mWhiteScore -= replaced.scoreValue;
+    }
     else if ( move.fPlayerColor.equals( PlayerColor.WHITE ) )
-      this.mWhiteScore += replaced.scoreValue;
+    {
+      this.mBlackScore -= replaced.scoreValue;
+    }
 
 
     if ( replaced.equals( Figure.BLACK_KING ) || replaced.equals( Figure.WHITE_KING ) )
     {
       this.mTakenKing = replaced;
-      this.mTurnsLeft = 0;
     }
 
     this.mTurnsLeft--;

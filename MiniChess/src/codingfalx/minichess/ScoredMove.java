@@ -2,7 +2,7 @@
  * Copyright (c) 2015 by Kristoffer Schneider
  */
 
-package codingfalx.minichess.bot;
+package codingfalx.minichess;
 
 import codingfalx.minichess.Move;
 import codingfalx.minichess.PlayerColor;
