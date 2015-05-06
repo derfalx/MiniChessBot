@@ -290,23 +290,13 @@ public abstract class ChessBot
 
 
 
-  public String writeToString ( )
+  public String writeToString ( boolean withAllTurns )
   {
     int turnsleft = this.mGameBoard.getTurnsLeft() / 2;
     char color = ( this.mPlayerColor.equals( PlayerColor.BLACK ) ) ? 'B' : 'W';
 
     String board = this.mGameBoard.serializeBoardToString();
-    double score = ( this.mPlayerColor.equals( PlayerColor.BLACK )  ) ? this.mGameBoard.getBlackScore() : this.mGameBoard.getWhiteScore();
 
-    Collection<ScoredMove> moves = this.scanWholeGameBoard();
-
-    ArrayList<String> str = new ArrayList<>( moves.size() );
-    for ( ScoredMove m : moves )
-    {
-      str.add( m.toString() );
-    }
-
-    Collections.sort( str );
 
     StringBuilder sb = new StringBuilder();
     sb.append ( turnsleft );
@@ -315,12 +305,34 @@ public abstract class ChessBot
     sb.append ( " " );
     sb.append ( board );
     sb.append ( " " );
-    sb.append ( score );
-    sb.append ( " " );
-    for ( String s : str )
+    if ( withAllTurns )
     {
-      sb.append ( s );
-      sb.append( " " );
+      double score = ( this.mPlayerColor.equals( PlayerColor.BLACK )  ) ? this.mGameBoard.getBlackScore() : this.mGameBoard.getWhiteScore();
+      sb.append ( score );
+      sb.append ( " " );
+
+    }
+
+    if ( withAllTurns )
+    {
+      Collection<ScoredMove> moves = this.scanWholeGameBoard();
+
+      ArrayList<String> str = new ArrayList<>( moves.size() );
+      for ( ScoredMove m : moves )
+      {
+        str.add( m.toString() );
+      }
+
+      Collections.sort( str );
+      int i = 0;
+      int max = str.size();
+      for ( String s : str )
+      {
+        sb.append ( s );
+        if ( i < max - 1 )
+          sb.append( " " );
+        i++;
+      }
     }
 
     return sb.toString();

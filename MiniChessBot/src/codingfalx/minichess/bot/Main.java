@@ -40,14 +40,15 @@ public class Main
     int white_ = 0;
     int draw_ = 0;
     ArrayList<Double> times = new ArrayList<>();
-    for ( int j = 0; j < 1; j++ )
+    for ( int j = 0; j < 1_000; j++ )
     {
       double start = System.currentTimeMillis();
-      for ( int i = 0; i < 1; i++ )
+      for ( int i = 0; i < 20; i++ )
       {
-        GreedyBot white = new GreedyBot();
-       //LookAheadBot white = new LookAheadBot();
-        LookAheadBot black = new LookAheadBot( 7 );
+        //GreedyBot white = new GreedyBot();
+        RandomBot white = new RandomBot();
+        //LookAheadBot white = new LookAheadBot();
+        LookAheadBot black = new LookAheadBot( 3 );
         GameMaster gm = new GameMaster( black, white );
         //System.out.println( "LETS PLAY!" );
         PlayerColor c = gm.runGame( true );
@@ -179,8 +180,10 @@ public class Main
       double start = System.currentTimeMillis();
       for ( int i = 0; i < 10_000; i++ )
       {
-        GreedyBot white = new GreedyBot();
-        GreedyBot black = new GreedyBot();
+   /*     GreedyBot white = new GreedyBot();
+        GreedyBot black = new GreedyBot();*/
+        RandomBot white = new RandomBot();
+        RandomBot black = new RandomBot();
         GameMaster gm = new GameMaster( black, white );
         //System.out.println( "LETS PLAY!" );
         PlayerColor c = gm.runGame( true );
@@ -250,7 +253,7 @@ public class Main
 
     //GreedyVsRandomTest();
 
-    //GreedyVsLookAheadTest();
+    GreedyVsLookAheadTest();
 
     //GreedyVsABLookAheadTest();
 
@@ -258,7 +261,7 @@ public class Main
 
    /* RandomVsConsoleTest();*/
 
-    GreedyVsGreedyTest();
+    //GreedyVsGreedyTest();
 
   }
 

@@ -5,6 +5,7 @@
 package codingfalx.minichess.bot;
 
 import codingfalx.minichess.*;
+import codingfalx.minichess.bot.debug.GameStateWriter;
 
 import java.util.ArrayList;
 
@@ -97,6 +98,7 @@ public class LookAheadBot
 
     ArrayList<ScoredMove> moves = new ArrayList<>();
     moves.addAll( bot.scanWholeGameBoard() );
+
     ScoredMove move = moves.remove( 0 );
 
     GameBoard _board = board.clone();
@@ -123,6 +125,12 @@ public class LookAheadBot
         if ( this.mBestMove.getDeltaScore() < m.getDeltaScore() )
           this.mBestMove = m;
       }
+    }
+
+    if ( onTop )
+    {
+      moves.add ( move );
+      GameStateWriter.Instance.writeBotState( this, false,_value, moves );
     }
 
     return _value;

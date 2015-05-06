@@ -5,6 +5,7 @@
 package codingfalx.minichess.bot;
 
 import codingfalx.minichess.*;
+import codingfalx.minichess.bot.debug.GameStateWriter;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -46,7 +47,6 @@ public class GameMaster
     this.mPlayerBlack.setPlayerColor( PlayerColor.BLACK );
     this.mPlayerBlack.setGameBoard( this.mGameBoard.clone() );
 
-    writer = new BufferedWriter( new FileWriter( "C:\\Users\\Kristoffer\\Desktop\\out.txt", true ) );
 
   }
 
@@ -92,7 +92,7 @@ public class GameMaster
 
       if ( i%2 == 0 )
       {
-        writer.append( activePlayer.writeToString() + "\n" );
+       // GameStateWriter.Instance.writeBotState( activePlayer );
       }
 
       if ( ( ( i % 2 ) == 0 ) &&  !silent )
