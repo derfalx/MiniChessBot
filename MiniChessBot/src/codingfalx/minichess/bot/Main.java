@@ -40,7 +40,7 @@ public class Main
     int white_ = 0;
     int draw_ = 0;
     ArrayList<Double> times = new ArrayList<>();
-    for ( int j = 0; j < 1_000; j++ )
+    for ( int j = 0; j < 10_000; j++ )
     {
       double start = System.currentTimeMillis();
       for ( int i = 0; i < 20; i++ )
@@ -52,7 +52,7 @@ public class Main
         GameMaster gm = new GameMaster( black, white );
         //System.out.println( "LETS PLAY!" );
         PlayerColor c = gm.runGame( true );
-        System.out.println( c );
+        //System.out.println( c );
         if ( c.equals( PlayerColor.WHITE ) )
           white_++;
         else if ( c.equals( PlayerColor.BLACK ) )

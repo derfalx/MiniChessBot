@@ -8,6 +8,7 @@ import codingfalx.minichess.*;
 import codingfalx.minichess.bot.debug.GameStateWriter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * @author falx
@@ -80,6 +81,8 @@ public class LookAheadBot
   {
     bot.setGameBoard( board );
 
+    HashMap<ScoredMove, Double> map = new HashMap<>();
+
     if ( board.getTurnsLeft() <= 0 )
     {
       return 0.0d;
@@ -106,6 +109,11 @@ public class LookAheadBot
     double _value = -( negamax( nextBot, _board, depth - 1, false ) );
 
     if ( onTop )
+    {
+      map.put ( move, _value );
+    }
+
+    if ( onTop )
       this.mBestMove = move;
 
     for ( ScoredMove m : moves )
@@ -113,6 +121,9 @@ public class LookAheadBot
       GameBoard _board_ = board.clone();
       _board_.makeMove( m );
       double value = -( negamax( nextBot, _board_, depth - 1, false ) );
+
+      if ( onTop )
+        map.put( m, value );
 
       if ( value > _value )
       {
@@ -130,7 +141,7 @@ public class LookAheadBot
     if ( onTop )
     {
       moves.add ( move );
-      GameStateWriter.Instance.writeBotState( this, false,_value, moves );
+      GameStateWriter.Instance.writeMoveScores( this, map );
     }
 
     return _value;

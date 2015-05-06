@@ -13,6 +13,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * @author falx
@@ -24,7 +25,7 @@ public class GameStateWriter
   {
     try
     {
-      GameStateWriter.Instance = new GameStateWriter( "C:\\\\Users\\\\Kristoffer\\\\Desktop\\\\out.txt", true );
+      GameStateWriter.Instance = new GameStateWriter( "C:\\Users\\falx\\200k.txt", true );
     }
     catch ( IOException e )
     {
@@ -56,9 +57,8 @@ public class GameStateWriter
     {
       this.mBufferedWriter.append( bot.writeToString( false )  );
       StringBuilder sb = new StringBuilder();
-      sb.append ( " " );
       sb.append( score );
-      sb.append ( "  ");
+      sb.append ( " ");
       ArrayList<String> str = new ArrayList<>( toAppend.size() );
       for ( ScoredMove m : toAppend )
         str.add( m.toString() );
@@ -80,6 +80,52 @@ public class GameStateWriter
       e.printStackTrace();
     }
   }
+
+  public void writeMoveScores ( ChessBot bot, HashMap<ScoredMove, Double> moves )
+  {
+    try
+    {
+      this.mBufferedWriter.append( bot.writeToString( false ) );
+      StringBuilder sb = new StringBuilder();
+      int i = 0;
+      int max = moves.keySet().size();
+      for ( ScoredMove m : moves.keySet() )
+      {
+        String s = m.toString();
+        double score = moves.get( m );
+        if ( i != 0 )
+          sb.append( " " );
+        i++;
+        sb.append( score );
+        sb.append ( " " );
+        sb.append( s );
+      }
+      sb.append( "\n" );
+      this.mBufferedWriter.append( sb.toString() );
+    }
+    catch ( IOException e )
+    {
+      e.printStackTrace();
+    }
+  }
+
+  public void writeMoveScores ( ChessBot bot, double score, Move move )
+  {
+    try
+    {
+      this.mBufferedWriter.append( bot.writeToString( false ) );
+      StringBuilder sb = new StringBuilder();
+      sb.append ( score );
+      sb.append ( " " );
+      sb.append( move.toString() );
+      this.mBufferedWriter.append( sb.toString() );
+    }
+    catch ( IOException e )
+    {
+      e.printStackTrace();
+    }
+  }
+
 
   //</editor-fold>
 }
