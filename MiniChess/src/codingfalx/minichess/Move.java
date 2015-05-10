@@ -17,6 +17,8 @@ public class Move
   public final Square fFrom;
   public final PlayerColor fPlayerColor;
   public final Square fTo;
+  public double mBlackScore;
+  public double mWhiteScore;
 
   //</editor-fold>
 

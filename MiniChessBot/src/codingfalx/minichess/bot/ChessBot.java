@@ -228,6 +228,7 @@ public abstract class ChessBot
       }
 
       Square to = new Square( x, y );
+      to.figure = figure;
       moves.add( new ScoredMove( from, to, color, score ) );
     }
     while ( !stopShort );
@@ -280,7 +281,9 @@ public abstract class ChessBot
         Figure figure = this.mGameBoard.getGameBoard()[y][x];
         if ( figure.color.equals( this.mPlayerColor ) )
         {
-          moves.addAll( this.moveList( new Square( x, y ) ) );
+          Square square = new Square( x, y );
+          square.figure = figure;
+          moves.addAll( this.moveList( square ) );
         }
       }
     }

@@ -26,7 +26,7 @@ public class GameMaster
   private ChessBot mPlayerBlack;
   private ChessBot mPlayerWhite;
 
-  private BufferedWriter writer;
+  //private BufferedWriter writer;
 
 
   //</editor-fold>
@@ -123,7 +123,7 @@ public class GameMaster
         return this.mPlayerWhite.getPlayerColor();
     }
 
-    writer.close();
+//    writer.close();
 
     return PlayerColor.NEUTRAL;
   }

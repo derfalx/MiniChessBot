@@ -19,6 +19,7 @@ public class Square
   public final int fColumnCount;
   public final char fRow;
   public final int fRowCount;
+  public Figure figure;
 
   //</editor-fold>
 

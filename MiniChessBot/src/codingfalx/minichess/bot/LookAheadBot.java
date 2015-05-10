@@ -138,7 +138,7 @@ public class LookAheadBot
       }
     }
 
-    if ( onTop )
+    if ( false )
     {
       moves.add ( move );
       GameStateWriter.Instance.writeMoveScores( this, map );

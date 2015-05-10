@@ -73,7 +73,7 @@ public class ABPrunedLookAheadBot
 
 
     ChessBot bot = this.getPlayerColor().equals( PlayerColor.BLACK ) ? this.mBlackNMBot : this.mWhiteNMBot;
-    double score = this.negamax( bot, this.mGameBoard.clone(), this.mMaxDepth, Double.MIN_VALUE, Double.MAX_VALUE,
+    double score = this.negamax( bot, this.mGameBoard.clone(), this.mMaxDepth, -1_000_000d, 1_000_000d,
                                  true );
     moveToMake = this.getBestMove( true, score );
 
@@ -82,15 +82,21 @@ public class ABPrunedLookAheadBot
     return moveToMake;
   }
 
+  /**
+   * chooses the best move out of the global move map
+   * @param chooseRnd wether to choose a random move out of the best, if there are many moves with the same score
+   * @param score the expected maximum score
+   * @return move with a maximum score
+   */
   private ScoredMove getBestMove ( boolean chooseRnd, double score )
   {
     double max = Collections.max( this.mMoveScoringStorage.keySet() );
     assert ( max == score );
     ArrayList<ScoredMove> maxScoredMoves = this.mMoveScoringStorage.get ( max );
-    if ( maxScoredMoves.size() == 1 )
+    //if ( maxScoredMoves.size() == 1 )
       return maxScoredMoves.get(0);
     //else
-    if ( chooseRnd )
+/*    if ( chooseRnd )
     {
       Random rnd = new Random();
       int index = rnd.nextInt( maxScoredMoves.size() );
@@ -99,15 +105,26 @@ public class ABPrunedLookAheadBot
     else
     {
       ScoredMove toRet = maxScoredMoves.get(0);
+
       for ( ScoredMove m : maxScoredMoves )
       {
         if ( toRet.getDeltaScore() < m.getDeltaScore() )
           toRet = m;
       }
       return toRet;
-    }
+    }*/
   }
 
+  /**
+   * negamax algorithm using Alpha-Beta-Pruning
+   * @param bot the bot used to generate the next possible moves
+   * @param board the board on which to do the next moves
+   * @param depth current depth of recursion
+   * @param alpha worst-possible-value
+   * @param beta best-possible-value
+   * @param onTop if it is the first recursion
+   * @return score of the best possible move(s)
+   */
   private double negamax ( ChessBot bot, GameBoard board, int depth, double alpha, double beta, boolean onTop )
   {
     bot.setGameBoard( board );
@@ -163,6 +180,11 @@ public class ABPrunedLookAheadBot
     return firstScoreValue;
   }
 
+  /**
+   * Adds the given move and score to the move map
+   * @param scoreValue the score assocciated with move
+   * @param move the move assocciated with the score
+   */
   private void insertMoveIntoStorage ( double scoreValue, ScoredMove move )
   {
     assert ( move.fPlayerColor.equals( this.mPlayerColor ) );

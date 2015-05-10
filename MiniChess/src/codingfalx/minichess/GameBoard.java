@@ -64,6 +64,15 @@ public class GameBoard
 
   public double getBlackScore ()
   {
+    if ( this.mTakenKing != null )
+    {
+      if ( this.mTakenKing.color.equals( PlayerColor.BLACK ) )
+      {
+        return -Figure.BLACK_KING.scoreValue;
+      }
+      else
+        return Figure.WHITE_KING.scoreValue;
+    }
     return this.mBlackScore - this.mWhiteScore;
   }
 
@@ -104,6 +113,16 @@ public class GameBoard
 
   public double getWhiteScore ()
   {
+    if ( this.mTakenKing != null )
+    {
+      if ( this.mTakenKing.color.equals( PlayerColor.WHITE) )
+      {
+        return -Figure.WHITE_KING.scoreValue;
+      }
+      else
+        return Figure.BLACK_KING.scoreValue;
+    }
+
     return this.mWhiteScore - this.mBlackScore;
   }
 
@@ -122,6 +141,9 @@ public class GameBoard
     {
       return false;
     }
+
+    move.mBlackScore = this.mBlackScore;
+    move.mWhiteScore = this.mWhiteScore;
 
     Figure toMove = this.replaceFigure( move.fFrom, Figure.EMPTY );
     Figure replaced = this.replaceFigure( move.fTo, toMove );
@@ -269,6 +291,23 @@ public class GameBoard
     this.mGameBoard[y][x] = replacement;
 
     return toReturn;
+  }
+
+  public void undoMove ( Move m )
+  {
+    Figure fromFigure = m.fFrom.figure;
+    Figure toFigure = m.fTo.figure;
+
+    this.mGameBoard[m.fFrom.fRowCount][m.fFrom.fColumnCount] = fromFigure;
+    this.mGameBoard[m.fTo.fRowCount][m.fTo.fColumnCount] = toFigure;
+
+    this.mBlackScore = m.mBlackScore;
+    this.mWhiteScore = m.mWhiteScore;
+
+    this.mTurnsLeft++;
+
+    if ( toFigure.equals( Figure.BLACK_KING ) || toFigure.equals( Figure.WHITE_KING ) )
+      this.mTakenKing = null;
   }
 
   //</editor-fold>
